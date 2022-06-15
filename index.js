@@ -1,5 +1,6 @@
-let inquirer = require('inquirer');
-let Logger = require('./src/Logger')
+const inquirer = require('inquirer');
+const Logger = require('./src/Logger')
+const fs = require('fs');
 const Employee = require('./lib/Employee');
 const Manager = require('./lib/Manager');
 const Engineer = require('./lib/Engineer');
@@ -22,9 +23,9 @@ let managerQuestions = [
         message: 'Enter the team managers name',
         name: 'name',
         validate: (name) => {
-            if((/^[a-zA-Z ]+$/g.test(name)) && name.length > 2){
+            if ((/^[a-zA-Z ]+$/g.test(name)) && name.length > 2) {
                 return true;
-            }else return 'A name cannot have numbers and longer than 2 characters'
+            } else return 'A name cannot have numbers and longer than 2 characters'
         }
     },
     {
@@ -32,9 +33,9 @@ let managerQuestions = [
         message: 'Enter the team managers ID',
         name: 'id',
         validate: (id) => {
-            if(/^\d+$/g.test(id)){
+            if (/^\d+$/g.test(id)) {
                 return true;
-            }else return 'ID must be a number'
+            } else return 'ID must be a number'
         }
     },
     {
@@ -42,9 +43,9 @@ let managerQuestions = [
         message: 'Enter the team managers email address',
         name: 'email',
         validate: (email) => {
-            if(/^[\w-]+@[a-zA-Z]+.com$/g.test(email)){
+            if (/^[\w-]+@[a-zA-Z]+.com$/g.test(email)) {
                 return true;
-            }else return 'email must be valid'
+            } else return 'email must be valid'
         }
     },
     {
@@ -67,9 +68,9 @@ let engineerQuestions = [
         message: 'Enter the engineers name',
         name: 'name',
         validate: (name) => {
-            if((/^[a-zA-Z ]+$/g.test(name)) && name.length > 2){
+            if ((/^[a-zA-Z ]+$/g.test(name)) && name.length > 2) {
                 return true;
-            }else return 'A name cannot have numbers and longer than 2 characters'
+            } else return 'A name cannot have numbers and longer than 2 characters'
         }
     },
     {
@@ -77,9 +78,9 @@ let engineerQuestions = [
         message: 'Enter the engineers ID',
         name: 'id',
         validate: (id) => {
-            if(/^\d+$/g.test(id)){
+            if (/^\d+$/g.test(id)) {
                 return true;
-            }else return 'ID must be a number'
+            } else return 'ID must be a number'
         }
     },
     {
@@ -87,9 +88,9 @@ let engineerQuestions = [
         message: 'Enter the engineers email address',
         name: 'email',
         validate: (email) => {
-            if(/^[\w-]+@[a-zA-Z]+.com$/g.test(email)){
+            if (/^[\w-]+@[a-zA-Z]+.com$/g.test(email)) {
                 return true;
-            }else return 'email must be valid'
+            } else return 'email must be valid'
         }
     },
     {
@@ -105,9 +106,9 @@ let internQuestions = [
         message: 'Enter the interns name',
         name: 'name',
         validate: (name) => {
-            if((/^[a-zA-Z ]+$/g.test(name)) && name.length > 2){
+            if ((/^[a-zA-Z ]+$/g.test(name)) && name.length > 2) {
                 return true;
-            }else return 'A name cannot have numbers and longer than 2 characters'
+            } else return 'A name cannot have numbers and longer than 2 characters'
         }
     },
     {
@@ -115,9 +116,9 @@ let internQuestions = [
         message: 'Enter the interns ID',
         name: 'id',
         validate: (id) => {
-            if(/^\d+$/g.test(id)){
+            if (/^\d+$/g.test(id)) {
                 return true;
-            }else return 'ID must be a number'
+            } else return 'ID must be a number'
         }
     },
     {
@@ -125,9 +126,9 @@ let internQuestions = [
         message: 'Enter the interns email address',
         name: 'email',
         validate: (email) => {
-            if(/^[\w-]+@[a-zA-Z]+.com$/g.test(email)){
+            if (/^[\w-]+@[a-zA-Z]+.com$/g.test(email)) {
                 return true;
-            }else return 'email must be valid'
+            } else return 'email must be valid'
         }
     },
     {
@@ -143,29 +144,29 @@ let internQuestions = [
 
 
 
-function start(){
+function start() {
     inquirer.prompt(welcomeMessage).then(start => {
-        if(start.start == 'start building'){
+        if (start.start == 'start building') {
             log.blue('start by entering the team managers details');
             managerPrompt();
         }
         else {
             log.red('----GOODBYE----')
         }
-        
+
     })
 }
 
-function managerPrompt(){
+function managerPrompt() {
     inquirer.prompt(managerQuestions).then(answers => {
         teamMembers.push(new Manager(answers.name, answers.id, answers.email, answers.officeNum));
         choicePrompt();
     })
 }
 
-function choicePrompt(){
+function choicePrompt() {
     inquirer.prompt(addTeamMenu).then(choice => {
-        switch(choice.choice){
+        switch (choice.choice) {
             case 'add engineer':
                 engineerPrompt();
                 break;
@@ -173,13 +174,13 @@ function choicePrompt(){
                 internPrompt();
                 break;
             case 'finish building team':
-                finishBuild();
+                finishBuild(teamMembers);
                 break;
         }
     })
 }
 
-function engineerPrompt(){
+function engineerPrompt() {
     inquirer.prompt(engineerQuestions).then(answers => {
         teamMembers.push(new Engineer(answers.name, answers.id, answers.email, answers.github));
         log.green(`
@@ -191,7 +192,7 @@ function engineerPrompt(){
     })
 }
 
-function internPrompt(){
+function internPrompt() {
     inquirer.prompt(internQuestions).then(answers => {
         teamMembers.push(new Intern(answers.name, answers.id, answers.email, answers.school));
         log.green(`
@@ -203,13 +204,103 @@ function internPrompt(){
     })
 }
 
-function finishBuild(){
-    console.log(teamMembers);
+function buildManager(data) {
+    return `
+    <div class="card mx-5" style="width: 22rem;">
+        <div class="card-body">
+        <h5 class="card-title text-center">${data.getRole()}</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Name: ${data.name}</li>
+                <li class="list-group-item">ID: ${data.id}</li>
+                <li class="list-group-item">Email: ${data.email}</li>
+                <li class="list-group-item">Office Number: ${data.officeNum}</li>
+            </ul>
+        </div>
+    </div>
+    `
 }
 
-let jeff = new Employee('jeff', '10', 'erh@hml.cs');
-let stan = new Manager('stan', '22', 'ahfd@.ca', '3');
+function buildIntern(data) {
+    return `
+    <div class="card mx-5" style="width: 22rem;">
+        <div class="card-body">
+        <h5 class="card-title text-center">${data.getRole()}</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Name: ${data.name}</li>
+                <li class="list-group-item">ID: ${data.id}</li>
+                <li class="list-group-item">Email: ${data.email}</li>
+                <li class="list-group-item">School: ${data.school}</li>
+            </ul>
+        </div>
+    </div>
+    `
+}
 
-log.green(stan.getRole())
+function buildEngineer(data) {
+    return `
+    <div class="card mx-5" style="width: 22rem;">
+        <div class="card-body">
+        <h5 class="card-title text-center">${data.getRole()}</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Name: ${data.name}</li>
+                <li class="list-group-item">ID: ${data.id}</li>
+                <li class="list-group-item">Email: ${data.email}</li>
+                <li class="list-group-item">GitHub: ${data.github}</li>
+            </ul>
+        </div>
+    </div>
+    `
+}
+
+const htmlStart =
+    `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="./css/style.css">
+        <title>Team Builder</title>
+    </head>
+    <body>
+        <div class="dashboard jumbotron jumbotron-fluid row py-4 bg-danger">
+        <div class="container text-center">
+            <h1 class="display-2">Team Builder</h1>
+        </div>
+    </div>
+    <div class="row justify-content-around" style="margin: 5vw 15vw 0 15vw;">`
+
+const htmlEnd = 
+    `
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+</body>`
+
+
+function finishBuild(data) {
+    console.log(data);
+    fs.appendFile('./dist/index.html', htmlStart, (err) =>
+                err ? console.error(err) : console.log('Commit logged!'));
+    data.forEach(element => {
+        switch(element.getRole()){
+            case 'Manager':
+                fs.appendFile('./dist/index.html', buildManager(element), (err) =>
+                err ? console.error(err) : console.log('Commit logged!'));
+                break;
+            case 'Engineer':
+                fs.appendFile('./dist/index.html', buildEngineer(element), (err) =>
+                err ? console.error(err) : console.log('Commit logged!'));
+                break;
+            case 'Intern':
+                fs.appendFile('./dist/index.html', buildIntern(element), (err) =>
+                err ? console.error(err) : console.log('Commit logged!'));
+                break;    
+        }
+    });
+    fs.appendFile('./dist/index.html', htmlEnd, (err) =>
+                err ? console.error(err) : console.log('Commit logged!'));
+}
+
 
 start();

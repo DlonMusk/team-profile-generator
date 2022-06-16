@@ -160,6 +160,11 @@ function start() {
 function managerPrompt() {
     inquirer.prompt(managerQuestions).then(answers => {
         teamMembers.push(new Manager(answers.name, answers.id, answers.email, answers.officeNum));
+        log.green(`
+        ---------------------------------------------------
+        Manager ${answers.name} has been added to the team
+        ---------------------------------------------------
+        `)
         choicePrompt();
     })
 }
@@ -258,8 +263,20 @@ function buildEngineer(data) {
     `
 }
 
-const htmlStart =
-    `<!DOCTYPE html>
+    
+
+
+
+function finishBuild(data) {
+
+    fs.appendFile('./dist/index.html', generateHTML(data), (err) =>
+        err ? console.error(err) : console.log('Content Appended!'));
+
+
+}
+
+function generateHTML(data) {
+    let html = `<!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -275,38 +292,29 @@ const htmlStart =
             <h1 class="display-2">Team Builder</h1>
         </div>
     </div>
-    <div class="row justify-content-around" style="margin: 5vw 15vw 0 15vw;">`
+    <div class="row justify-content-around" id="addCards" style="margin: 5vw 15vw 0 15vw;">  
+`;
 
-const htmlEnd = 
-    `
-    </div>
+
+    for (let i = 0; i < data.length; i++) {
+        if(data[i].getRole() == 'Manager'){
+            html += buildManager(data[i]);
+        }else if(data[i].getRole() == 'Engineer'){
+            html += buildEngineer(data[i]);
+        }else if(data[i].getRole() == 'Intern'){
+            html += buildIntern(data[i])
+        }
+    }
+
+    html += `</div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
 </body>`
 
-
-function finishBuild(data) {
-    console.log(data);
-    fs.appendFile('./dist/index.html', htmlStart, (err) =>
-                err ? console.error(err) : console.log('Content Appended!'));
-    data.forEach(element => {
-        switch(element.getRole()){
-            case 'Manager':
-                fs.appendFile('./dist/index.html', buildManager(element), (err) =>
-                err ? console.error(err) : console.log('Content Appended!'));
-                break;
-            case 'Engineer':
-                fs.appendFile('./dist/index.html', buildEngineer(element), (err) =>
-                err ? console.error(err) : console.log('Content Appended!'));
-                break;
-            case 'Intern':
-                fs.appendFile('./dist/index.html', buildIntern(element), (err) =>
-                err ? console.error(err) : console.log('Content Appended!'));
-                break;    
-        }
-    });
-    fs.appendFile('./dist/index.html', htmlEnd, (err) =>
-                err ? console.error(err) : console.log('Commit logged!'));
+return html;
 }
+
+
+
 
 
 start();

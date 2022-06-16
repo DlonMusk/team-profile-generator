@@ -206,13 +206,15 @@ function internPrompt() {
 
 function buildManager(data) {
     return `
-    <div class="card mx-5" style="width: 22rem;">
-        <div class="card-body">
+    <div class="card my-5" style="width: 22rem;">
+    <div class="card-header bg-info">
+        <h5 class="card-title text-center">Name: ${data.name}</h5>
         <h5 class="card-title text-center">${data.getRole()}</h5>
+    </div>
+        <div class="card-body">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">Name: ${data.name}</li>
                 <li class="list-group-item">ID: ${data.id}</li>
-                <li class="list-group-item">Email: ${data.email}</li>
+                <li class="list-group-item">Email: <a href="mailto:${data.email}">${data.email}</a></li>
                 <li class="list-group-item">Office Number: ${data.officeNum}</li>
             </ul>
         </div>
@@ -222,13 +224,15 @@ function buildManager(data) {
 
 function buildIntern(data) {
     return `
-    <div class="card mx-5" style="width: 22rem;">
-        <div class="card-body">
+    <div class="card my-5" style="width: 22rem;">
+    <div class="card-header bg-info">
+        <h5 class="card-title text-center">Name: ${data.name}</h5>
         <h5 class="card-title text-center">${data.getRole()}</h5>
+    </div>
+        <div class="card-body">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">Name: ${data.name}</li>
                 <li class="list-group-item">ID: ${data.id}</li>
-                <li class="list-group-item">Email: ${data.email}</li>
+                <li class="list-group-item">Email: <a href="mailto:${data.email}">${data.email}</a></li>
                 <li class="list-group-item">School: ${data.school}</li>
             </ul>
         </div>
@@ -238,14 +242,16 @@ function buildIntern(data) {
 
 function buildEngineer(data) {
     return `
-    <div class="card mx-5" style="width: 22rem;">
-        <div class="card-body">
+    <div class="card my-5" style="width: 22rem;">
+    <div class="card-header bg-info">
+        <h5 class="card-title text-center">Name: ${data.name}</h5>
         <h5 class="card-title text-center">${data.getRole()}</h5>
+    </div>
+        <div class="card-body">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">Name: ${data.name}</li>
                 <li class="list-group-item">ID: ${data.id}</li>
-                <li class="list-group-item">Email: ${data.email}</li>
-                <li class="list-group-item">GitHub: ${data.github}</li>
+                <li class="list-group-item">Email: <a href="mailto:${data.email}">${data.email}</a></li>
+                <li class="list-group-item">GitHub: <a href="https://github.com/${data.github}">${data.github}</a></li>
             </ul>
         </div>
     </div>
@@ -260,7 +266,7 @@ const htmlStart =
         <meta http-equiv="X-UA-Compatible">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" href="./css/style.css">
+        <link rel="stylesheet" href="../css/style.css">
         <title>Team Builder</title>
     </head>
     <body>
@@ -281,20 +287,20 @@ const htmlEnd =
 function finishBuild(data) {
     console.log(data);
     fs.appendFile('./dist/index.html', htmlStart, (err) =>
-                err ? console.error(err) : console.log('Commit logged!'));
+                err ? console.error(err) : console.log('Content Appended!'));
     data.forEach(element => {
         switch(element.getRole()){
             case 'Manager':
                 fs.appendFile('./dist/index.html', buildManager(element), (err) =>
-                err ? console.error(err) : console.log('Commit logged!'));
+                err ? console.error(err) : console.log('Content Appended!'));
                 break;
             case 'Engineer':
                 fs.appendFile('./dist/index.html', buildEngineer(element), (err) =>
-                err ? console.error(err) : console.log('Commit logged!'));
+                err ? console.error(err) : console.log('Content Appended!'));
                 break;
             case 'Intern':
                 fs.appendFile('./dist/index.html', buildIntern(element), (err) =>
-                err ? console.error(err) : console.log('Commit logged!'));
+                err ? console.error(err) : console.log('Content Appended!'));
                 break;    
         }
     });

@@ -1,18 +1,28 @@
 {
-  "name": "02-challenge",
+  "name": "team-profile-generator",
   "version": "1.0.0",
   "description": "## Your Task",
   "main": "index.js",
   "directories": {
-    "lib": "lib"
+    "lib": "lib",
+    "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DlonMusk/team-profile-generator.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DlonMusk/team-profile-generator/issues"
+  },
+  "homepage": "https://github.com/DlonMusk/team-profile-generator#readme",
   "dependencies": {
-    "inquirer": "^8.2.4"
+    "inquirer": "^8.2.4",
+    "jest": "^28.1.1"
   }
 }
